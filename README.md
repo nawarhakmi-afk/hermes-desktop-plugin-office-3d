@@ -141,7 +141,15 @@ Then make it take effect:
 
 - Hermes Desktop **0.20.0+** — the desktop app is required; the CLI/gateway alone does not load desktop plugins. (Developed on 0.20.0.)
 - The dashboard web server running (it serves `/api/plugins/...`).
-- **Linux or macOS.** Windows support has not been validated; the manifest declares `platforms: [linux, macos]`.
+- **Linux, macOS — or Windows in this fork.** Upstream declares `platforms: [linux, macos]`; this fork (**`1.4.2-win.1`**) replaces the only POSIX-only path (the `os.kill(pid, 0)` liveness probe, which on Windows routes through `TerminateProcess`) with a ctypes `OpenProcess` + `GetExitCodeProcess` probe that never signals the target, and declares `windows`. Verified on Windows 11 / Python 3.11: `hermes plugins validate` passes, `office_status` returns live fleet data, and the isometric page renders. See [`WINDOWS.md`](./WINDOWS.md) for the exact diff and what was measured.
+
+### Installing this fork
+
+```bash
+hermes plugins install <owner>/hermes-desktop-plugin-office-3d
+```
+
+Then quit and reopen Hermes Desktop, and enable **Office 3D** once under Capabilities ▸ Plugins — a unified package's desktop half loads **opt-in OFF** by design (`.hermes-package.json`), so the `Office` sidebar row only appears after that one click. It then survives restarts.
 
 ## Uninstall
 
